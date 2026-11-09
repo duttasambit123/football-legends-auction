@@ -176,7 +176,8 @@ Birgit Prinz|GER|ST|89|2000s♀
 Hugo Sánchez|MEX|ST|88|1980s
 Just Fontaine|FRA|ST|88|1950s
 Sam Kerr|AUS|ST|88|2020s♀
-Gary Lineker|ENG|ST|87|1980s`;
+Gary Lineker|ENG|ST|87|1980s
+Micheal Platini|FRA|91|1980s';
 const PT=[[60,1],[70,5],[80,15],[85,30],[90,60],[93,100],[96,150],[99,250],[100,400]];
 const H=s=>[...s].reduce((a,c)=>(a*31+c.charCodeAt(0))>>>0,7);
 const price=(o,n)=>{let i=PT.findIndex(x=>x[0]>=o);if(i<1)i=1;const a=PT[i-1],b=PT[i];return Math.max(1,Math.round((a[1]+(b[1]-a[1])*(o-a[0])/(b[0]-a[0]))*(.93+H(n)%15/100)))};
