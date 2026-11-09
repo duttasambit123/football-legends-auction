@@ -432,7 +432,7 @@ $('#app').innerHTML=`<div class="g" style="padding-top:20px"><h1>${w===me?'You w
 ${R2.filter(x=>x.t!==me).map(x=>`<div class="pn"><h3>${x.t.n}</h3><p>${x.t.sq.slice().sort((a,b)=>b.o-a.o).map(y=>`<span class="chip">${y.p} ${y.n} · ${y.o}${(x.t.pd||{})[y.n]?' · '+x.t.pd[y.n]+' FC':''}</span>`).join('')||'No signings'}</p></div>`).join('')}<p><button id="again">Play again</button></p><p class="mu" style="font-size:14px">Rating is the average of your best 11 plus a small bonus for covering every position.</p></div>`;$('#again').onclick=quit}
 let PZ=0,CT=0,VW=-1,LSG='',RM=null,ME=null,PASS=null,LOB=[],LOBV=null,CODE='',HO=0,lt=null;
 // Supabase project settings: fill these in after creating your free Supabase project.
-const SUPABASE_URL='https://gtrlfklimxfyfxdbmsrl.supabase.co';
+const SUPABASE_URL='https://gtrlfklimxfyxdbmsrl.supabase.co';
 const SUPABASE_ANON_KEY='sb_publishable_xWLEBCiRUD-NhEeS5o3T2Q_rW6CmCXv';
 let SB=null,ROOM_ERR='';
 const cl=s=>String(s).replace(/[<>&"'`]/g,'');
