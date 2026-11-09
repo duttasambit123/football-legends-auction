@@ -1,0 +1,599 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Football Legends Auction</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;600&display=swap">
+<style>
+:root{--bg:#0d1f19;--pn:#14302a;--ln:#2b5446;--tx:#eef2e6;--mu:#93ad9f;--gd:#f0b429;--rd:#e5533d;--gr:#46d68c;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:radial-gradient(ellipse at 50% -10%,#24523f 0,var(--bg) 60%) fixed;color:var(--tx);font:16px/1.4 Barlow,system-ui,sans-serif;min-height:100vh}
+h1,h2,h3{font-family:'Bebas Neue',Impact,sans-serif;font-weight:400;letter-spacing:.03em;margin:0}
+h1{font-size:clamp(48px,11vw,110px);line-height:.9}
+.w{max-width:1100px;margin:0 auto;padding:16px}
+.pn{background:var(--pn);border:1px solid var(--ln);border-radius:10px;padding:14px}
+.g{display:grid;gap:14px}.g2{grid-template-columns:1.1fr 1fr}
+@media(max-width:800px){.g2{grid-template-columns:1fr}}
+button,select,input{font:inherit;color:inherit}
+button{background:var(--gd);color:#1a1405;border:0;border-radius:8px;padding:11px 18px;font-weight:600;cursor:pointer}
+button.s{background:transparent;color:var(--tx);border:1px solid var(--ln)}
+button:disabled{opacity:.35;cursor:not-allowed}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--gr);outline-offset:2px}
+select,input{background:#0d1f19;border:1px solid var(--ln);border-radius:8px;padding:9px;width:100%}
+label{display:block;color:var(--mu);margin:10px 0 4px}
+.card{display:flex;gap:16px;align-items:center}
+.mono{width:104px;height:104px;border-radius:50%;display:grid;place-items:center;font:44px 'Bebas Neue';color:#1a1405;flex:none}
+.t3{background:linear-gradient(135deg,#ffe08a,#c98d0b)}.t2{background:linear-gradient(135deg,#e8eef0,#8fa0a8)}.t1{background:linear-gradient(135deg,#e0a46f,#8a5126)}
+.ovr{font:64px/1 'Bebas Neue';color:var(--gd)}
+.st{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;text-align:center;margin-top:12px}
+.st b{display:block;font:24px 'Bebas Neue'}.st span{color:var(--mu);font-size:12px}
+.bar{height:8px;background:#0d1f19;border-radius:4px;overflow:hidden}.bar i{display:block;height:100%;background:var(--gr);transition:width 1s linear}
+.big{font:56px/1 'Bebas Neue'}
+.row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1}
+table{width:100%;border-collapse:collapse}td,th{padding:6px 4px;border-bottom:1px solid var(--ln);text-align:left}th{color:var(--mu);font-weight:400}
+.me td{color:var(--gd)}
+.log{max-height:190px;overflow:auto;color:var(--mu);font-size:14px}.log div{padding:2px 0}
+.chip{display:inline-block;border:1px solid var(--ln);border-radius:20px;padding:2px 10px;margin:2px;font-size:13px}
+.ann{min-height:28px;font:26px 'Bebas Neue';color:var(--gd);letter-spacing:.04em}
+.mu{color:var(--mu)}.red{color:var(--rd)}.grn{color:var(--gr)}
+@media(prefers-reduced-motion:reduce){.bar i{transition:none}}
+</style></head><body><div class="w" id="app"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const D=`Lev Yashin|RUS|GK|93|1960s
+Thibaut Courtois|BEL|GK|89|2020s
+Alisson|BRA|GK|88|2020s
+Jan Oblak|SVN|GK|88|2010s
+Marc-André ter Stegen|GER|GK|87|2010s
+Ederson|BRA|GK|86|2020s
+Gianluigi Donnarumma|ITA|GK|86|2020s
+Rúben Dias|POR|CB|87|2020s
+Marquinhos|BRA|CB|87|2010s
+Antonio Rüdiger|GER|CB|86|2020s
+William Saliba|FRA|CB|86|2020s
+Andrew Robertson|SCO|LB|86|2020s
+Trent Alexander-Arnold|ENG|RB|87|2020s
+Achraf Hakimi|MAR|RB|86|2020s
+Casemiro|BRA|DM|87|2020s
+Joshua Kimmich|GER|DM|88|2020s
+Declan Rice|ENG|DM|86|2020s
+Jude Bellingham|ENG|CM|89|2020s
+Pedri|ESP|CM|88|2020s
+Federico Valverde|URU|CM|86|2020s
+Bernardo Silva|POR|AM|88|2020s
+Martin Ødegaard|NOR|AM|87|2020s
+Jamal Musiala|GER|AM|87|2020s
+Phil Foden|ENG|AM|87|2020s
+Florian Wirtz|GER|AM|86|2020s
+Son Heung-min|KOR|LW|87|2020s
+Rafael Leão|POR|LW|86|2020s
+Lamine Yamal|ESP|RW|88|2020s
+Bukayo Saka|ENG|RW|85|2020s
+Lautáro Martínez|ARG|ST|86|2020s
+Victor Osimhen|NGA|ST|85|2020s
+Julián Álvarez|ARG|ST|85|2020s
+Edwin van der Sar|NED|GK|88|2000s
+Peter Shilton|ENG|GK|88|1980s
+Sepp Maier|GER|GK|87|1970s
+Gilmar|BRA|GK|86|1960s
+Pat Jennings|NIR|GK|86|1970s
+Ubaldo Fillol|ARG|GK|86|1970s
+Angelo Peruzzi|ITA|GK|85|1990s
+Fabien Barthez|FRA|GK|85|1990s
+José Luis Chilavert|PAR|GK|85|1990s
+Nadine Angerer|GER|GK|86|2000s♀
+Víctor Valdés|ESP|GK|84|2000s
+Claudio Taffarel|BRA|GK|84|1990s
+Dida|BRA|GK|84|2000s
+Gaetano Scirea|ITA|CB|91|1980s
+Marcel Desailly|FRA|CB|89|1990s
+Elías Figueroa|CHI|CB|89|1970s
+Giorgio Chiellini|ITA|CB|88|2010s
+Ruud Krol|NED|CB|88|1970s
+Daniel Passarella|ARG|CB|88|1970s
+Laurent Blanc|FRA|CB|87|1990s
+Fernando Hierro|ESP|CB|87|1990s
+Lúcio|BRA|CB|87|2000s
+Vincent Kompany|BEL|CB|87|2010s
+Diego Godín|URU|CB|87|2010s
+Mats Hummels|GER|CB|87|2010s
+Alan Hansen|SCO|CB|86|1980s
+Alessandro Costacurta|ITA|CB|86|1990s
+Leonardo Bonucci|ITA|CB|86|2010s
+Walter Samuel|ARG|CB|86|2000s
+Ricardo Carvalho|POR|CB|86|2000s
+Billy Wright|ENG|CB|86|1950s
+Tony Adams|ENG|CB|85|1990s
+Cesare Maldini|ITA|CB|85|1960s
+Wendie Renard|FRA|CB|89|2010s♀
+Paul Breitner|GER|LB|88|1970s
+Andreas Brehme|GER|LB|86|1990s
+David Alaba|AUT|LB|86|2010s
+Júnior|BRA|LB|85|1980s
+Bixente Lizarazu|FRA|LB|85|2000s
+Patrice Evra|FRA|LB|85|2010s
+Karl-Heinz Schnellinger|GER|LB|85|1960s
+Carlos Alberto Torres|BRA|RB|88|1970s
+Dani Carvajal|ESP|RB|87|2010s
+Berti Vogts|GER|RB|86|1970s
+Gianluca Zambrotta|ITA|RB|86|2000s
+Kyle Walker|ENG|RB|85|2010s
+Manfred Kaltz|GER|RB|85|1970s
+Mauro Tassotti|ITA|RB|85|1990s
+Maicon|BRA|RB|85|2000s
+Frank Rijkaard|NED|DM|89|1980s
+Xabi Alonso|ESP|DM|89|2000s
+Josep Guardiola|ESP|DM|89|1990s
+Fernando Redondo|ARG|DM|88|1990s
+Javier Mascherano|ARG|DM|87|2010s
+Edgar Davids|NED|DM|87|1990s
+Michael Essien|GHA|DM|86|2000s
+Gilberto Silva|BRA|DM|84|2000s
+Nobby Stiles|ENG|DM|82|1960s
+Falcão|BRA|CM|91|1980s
+Didi|BRA|CM|91|1950s
+Michelle Akers|USA|CM|90|1990s♀
+Gérson|BRA|CM|89|1970s
+Luisito Suárez|ESP|CM|89|1960s
+Wolfgang Overath|GER|CM|88|1970s
+Günter Netzer|GER|CM|88|1970s
+Fritz Walter|GER|CM|88|1950s
+Marco Tardelli|ITA|CM|88|1980s
+Giancarlo Antognoni|ITA|CM|88|1980s
+Michael Ballack|GER|CM|88|2000s
+Paul Gascoigne|ENG|CM|88|1990s
+Cesc Fàbregas|ESP|CM|88|2010s
+Bastian Schweinsteiger|GER|CM|88|2010s
+Yaya Touré|CIV|CM|88|2010s
+Duncan Edwards|ENG|CM|88|1950s
+Josef Masopust|CZE|CM|88|1960s
+Homare Sawa|JPN|CM|88|2010s♀
+Carli Lloyd|USA|CM|88|2010s♀
+Billy Bremner|SCO|CM|87|1970s
+Jean Tigana|FRA|CM|87|1980s
+Alain Giresse|FRA|CM|87|1980s
+Alan Ball|ENG|CM|86|1960s
+Arturo Vidal|CHI|CM|86|2010s
+Ivan Rakitić|CRO|CM|86|2010s
+Danny Blanchflower|NIR|CM|86|1950s
+Roberto Donadoni|ITA|CM|85|1990s
+Ruud Gullit|NED|AM|92|1980s
+Raymond Kopa|FRA|AM|91|1950s
+Rivelino|BRA|AM|90|1970s
+Omar Sívori|ITA|AM|90|1960s
+László Kubala|HUN|AM|90|1950s
+Juan Schiaffino|URU|AM|90|1950s
+Tostão|BRA|AM|90|1960s
+Alessandro Del Piero|ITA|AM|90|2000s
+Gheorghe Hagi|ROU|AM|90|1990s
+Eric Cantona|FRA|AM|89|1990s
+Rui Costa|POR|AM|89|1990s
+Nándor Hidegkuti|HUN|AM|89|1950s
+Teófilo Cubillas|PER|AM|89|1970s
+Dejan Savićević|MNE|AM|88|1990s
+Dragan Stojković|SRB|AM|88|1990s
+Sandro Mazzola|ITA|AM|88|1960s
+Enzo Francescoli|URU|AM|88|1990s
+Wesley Sneijder|NED|AM|88|2010s
+David Silva|ESP|AM|88|2010s
+Thomas Müller|GER|AM|88|2010s
+Zbigniew Boniek|POL|AM|87|1980s
+Carlos Valderrama|COL|AM|86|1990s
+Jay-Jay Okocha|NGA|AM|86|2000s
+Juninho Pernambucano|BRA|AM|86|2000s
+Jari Litmanen|FIN|AM|86|1990s
+Abedi Pelé|GHA|AM|86|1990s
+Dzsenifer Marozsán|GER|AM|86|2010s♀
+Enzo Scifo|BEL|AM|85|1980s
+Hidetoshi Nakata|JPN|AM|84|2000s
+Francisco Gento|ESP|LW|91|1950s
+Tom Finney|ENG|LW|90|1950s
+Oleg Blokhin|UKR|LW|88|1970s
+Rob Rensenbrink|NED|LW|88|1970s
+Kristine Lilly|USA|LW|88|1990s♀
+John Barnes|ENG|LW|87|1980s
+Marc Overmars|NED|LW|86|1990s
+Zoltán Czibor|HUN|LW|86|1950s
+Paulo Futre|POR|LW|85|1980s
+Ángel Di María|ARG|RW|89|2010s
+Julinho|BRA|RW|88|1950s
+Alcides Ghiggia|URU|RW|87|1950s
+Amancio|ESP|RW|87|1960s
+Megan Rapinoe|USA|RW|87|2010s♀
+Helmut Rahn|GER|RW|86|1950s
+Lieke Martens|NED|RW|86|2010s♀
+Johnny Rep|NED|RW|85|1970s
+Pedro|ESP|RW|85|2010s
+Chris Waddle|ENG|RW|85|1980s
+Sándor Kocsis|HUN|ST|91|1950s
+Denis Law|SCO|ST|91|1960s
+Gigi Riva|ITA|ST|90|1970s
+Jimmy Greaves|ENG|ST|90|1960s
+Mario Kempes|ARG|ST|90|1970s
+George Weah|LBR|ST|90|1990s
+Karl-Heinz Rummenigge|GER|ST|90|1980s
+Abby Wambach|USA|ST|90|2010s♀
+Christine Sinclair|CAN|ST|90|2010s♀
+Robin van Persie|NED|ST|89|2010s
+Fernando Torres|ESP|ST|89|2000s
+David Villa|ESP|ST|89|2010s
+Vavá|BRA|ST|88|1950s
+Gunnar Nordahl|SWE|ST|88|1950s
+Kevin Keegan|ENG|ST|88|1970s
+Ian Rush|WAL|ST|88|1980s
+Jürgen Klinsmann|GER|ST|88|1990s
+Jean-Pierre Papin|FRA|ST|88|1990s
+Gianluca Vialli|ITA|ST|88|1990s
+Henrik Larsson|SWE|ST|88|2000s
+Antoine Griezmann|FRA|ST|88|2010s
+Edinson Cavani|URU|ST|88|2010s
+Ada Hegerberg|NOR|ST|88|2020s♀
+Vivianne Miedema|NED|ST|88|2020s♀
+Paolo Rossi|ITA|ST|87|1980s
+Rudi Völler|GER|ST|87|1980s
+Careca|BRA|ST|87|1980s
+Miroslav Klose|GER|ST|87|2000s
+Christian Vieri|ITA|ST|87|2000s
+David Trezeguet|FRA|ST|87|2000s
+Davor Šuker|CRO|ST|87|1990s
+Gonzalo Higuaín|ARG|ST|87|2010s
+Michael Owen|ENG|ST|87|2000s
+Alex Morgan|USA|ST|87|2010s♀
+Geoff Hurst|ENG|ST|86|1960s
+Roberto Bettega|ITA|ST|86|1970s
+Hernán Crespo|ARG|ST|86|2000s
+Filippo Inzaghi|ITA|ST|86|2000s
+Diego Forlán|URU|ST|86|2000s
+Nat Lofthouse|ENG|ST|86|1950s
+Teddy Sheringham|ENG|ST|85|1990s
+Dwight Yorke|TRI|ST|85|1990s
+Roger Milla|CMR|ST|84|1990s
+Kanu|NGA|ST|84|1990s
+Gianluigi Buffon|ITA|GK|93|2000s
+Iker Casillas|ESP|GK|92|2000s
+Manuel Neuer|GER|GK|92|2010s
+Peter Schmeichel|DEN|GK|90|1990s
+Oliver Kahn|GER|GK|90|2000s
+Gordon Banks|ENG|GK|89|1960s
+Dino Zoff|ITA|GK|89|1970s
+Petr Čech|CZE|GK|89|2000s
+Hope Solo|USA|GK|87|2010s♀
+Franz Beckenbauer|GER|CB|95|1970s
+Paolo Maldini|ITA|CB|95|1990s
+Franco Baresi|ITA|CB|93|1990s
+Bobby Moore|ENG|CB|91|1960s
+Fabio Cannavaro|ITA|CB|91|2000s
+Alessandro Nesta|ITA|CB|91|2000s
+Sergio Ramos|ESP|CB|91|2010s
+Virgil van Dijk|NED|CB|90|2020s
+Carles Puyol|ESP|CB|90|2000s
+Rio Ferdinand|ENG|CB|89|2000s
+John Terry|ENG|CB|89|2000s
+Nemanja Vidić|SRB|CB|89|2000s
+Ronald Koeman|NED|CB|88|1980s
+Matthias Sammer|GER|CB|88|1990s
+Thiago Silva|BRA|CB|88|2010s
+Gerard Piqué|ESP|CB|88|2010s
+Jaap Stam|NED|CB|87|1990s
+Roberto Carlos|BRA|LB|91|2000s
+Nilton Santos|BRA|LB|90|1950s
+Giacinto Facchetti|ITA|LB|90|1960s
+Ashley Cole|ENG|LB|88|2000s
+Marcelo|BRA|LB|88|2010s
+Jordi Alba|ESP|LB|86|2010s
+Cafu|BRA|RB|92|2000s
+Dani Alves|BRA|RB|91|2010s
+Philipp Lahm|GER|RB|91|2010s
+Djalma Santos|BRA|RB|89|1950s
+Lilian Thuram|FRA|RB|88|2000s
+Javier Zanetti|ARG|RB|88|2000s
+Lucy Bronze|ENG|RB|88|2020s♀
+Patrick Vieira|FRA|DM|90|2000s
+Roy Keane|IRL|DM|90|1990s
+Sergio Busquets|ESP|DM|90|2010s
+Rodri|ESP|DM|91|2020s
+N’Golo Kanté|FRA|DM|89|2010s
+Claude Makélélé|FRA|DM|88|2000s
+Gennaro Gattuso|ITA|DM|85|2000s
+Dunga|BRA|DM|85|1990s
+Xavi|ESP|CM|94|2010s
+Andrés Iniesta|ESP|CM|94|2010s
+Michel Platini|FRA|CM|93|1980s
+Andrea Pirlo|ITA|CM|92|2000s
+Luka Modrić|CRO|CM|92|2010s
+Lothar Matthäus|GER|CM|92|1990s
+Kevin De Bruyne|BEL|CM|92|2020s
+Steven Gerrard|ENG|CM|91|2000s
+Toni Kroos|GER|CM|91|2010s
+Bobby Charlton|ENG|CM|91|1960s
+Alexia Putellas|ESP|CM|91|2020s♀
+Aitana Bonmatí|ESP|CM|91|2020s♀
+Frank Lampard|ENG|CM|90|2000s
+Paul Scholes|ENG|CM|90|2000s
+Sócrates|BRA|CM|89|1980s
+Johan Neeskens|NED|CM|88|1970s
+Clarence Seedorf|NED|CM|88|2000s
+Bryan Robson|ENG|CM|87|1980s
+Diego Maradona|ARG|AM|98|1980s
+Pelé|BRA|AM|99|1960s
+Johan Cruyff|NED|AM|97|1970s
+Zinedine Zidane|FRA|AM|96|2000s
+Alfredo Di Stéfano|ARG|AM|96|1950s
+Ferenc Puskás|HUN|AM|95|1950s
+Ronaldinho|BRA|AM|94|2000s
+Roberto Baggio|ITA|AM|93|1990s
+Zico|BRA|AM|92|1980s
+Kaká|BRA|AM|92|2000s
+Dennis Bergkamp|NED|AM|91|1990s
+Rivaldo|BRA|AM|91|1990s
+Michael Laudrup|DEN|AM|90|1990s
+Francesco Totti|ITA|AM|90|2000s
+Gianni Rivera|ITA|AM|89|1960s
+Juan Román Riquelme|ARG|AM|88|2000s
+Mesut Özil|GER|AM|87|2010s
+Cristiano Ronaldo|POR|LW|97|2000s
+Kylian Mbappé|FRA|LW|94|2020s
+George Best|NIR|LW|94|1960s
+Neymar|BRA|LW|92|2010s
+Marta|BRA|LW|92|2010s♀
+Vinícius Júnior|BRA|LW|90|2020s
+Eden Hazard|BEL|LW|90|2010s
+Franck Ribéry|FRA|LW|90|2010s
+Ryan Giggs|WAL|LW|89|1990s
+Pavel Nedvěd|CZE|LW|89|2000s
+Sadio Mané|SEN|LW|88|2010s
+Lionel Messi|ARG|RW|99|2010s
+Garrincha|BRA|RW|95|1950s
+Luís Figo|POR|RW|92|2000s
+Mohamed Salah|EGY|RW|91|2020s
+Stanley Matthews|ENG|RW|91|1950s
+Arjen Robben|NED|RW|90|2010s
+Jairzinho|BRA|RW|90|1970s
+Gareth Bale|WAL|RW|89|2010s
+David Beckham|ENG|RW|88|2000s
+Ronaldo Nazário|BRA|ST|97|1990s
+Eusébio|POR|ST|95|1960s
+Thierry Henry|FRA|ST|94|2000s
+Gerd Müller|GER|ST|94|1970s
+Marco van Basten|NED|ST|94|1980s
+Erling Haaland|NOR|ST|93|2020s
+Robert Lewandowski|POL|ST|93|2010s
+Karim Benzema|FRA|ST|92|2010s
+Romário|BRA|ST|92|1990s
+Gabriel Batistuta|ARG|ST|91|1990s
+Luis Suárez|URU|ST|91|2010s
+Zlatan Ibrahimović|SWE|ST|91|2000s
+Mia Hamm|USA|ST|91|1990s♀
+Wayne Rooney|ENG|ST|90|2000s
+Raúl|ESP|ST|90|2000s
+Ruud van Nistelrooy|NED|ST|90|2000s
+Alan Shearer|ENG|ST|90|1990s
+Samuel Eto’o|CMR|ST|90|2000s
+Kenny Dalglish|SCO|ST|90|1970s
+Hristo Stoichkov|BUL|ST|90|1990s
+Andriy Shevchenko|UKR|ST|90|2000s
+Harry Kane|ENG|ST|90|2020s
+Didier Drogba|CIV|ST|89|2000s
+Sergio Agüero|ARG|ST|89|2010s
+Birgit Prinz|GER|ST|89|2000s♀
+Hugo Sánchez|MEX|ST|88|1980s
+Just Fontaine|FRA|ST|88|1950s
+Sam Kerr|AUS|ST|88|2020s♀
+Gary Lineker|ENG|ST|87|1980s`;
+const PT=[[60,1],[70,5],[80,15],[85,30],[90,60],[93,100],[96,150],[99,250],[100,400]];
+const H=s=>[...s].reduce((a,c)=>(a*31+c.charCodeAt(0))>>>0,7);
+const price=(o,n)=>{let i=PT.findIndex(x=>x[0]>=o);if(i<1)i=1;const a=PT[i-1],b=PT[i];return Math.max(1,Math.round((a[1]+(b[1]-a[1])*(o-a[0])/(b[0]-a[0]))*(.93+H(n)%15/100)))};
+const OFF={ST:[0,2,-8,-2,-40,-4],LW:[4,-3,-4,3,-40,-12],RW:[4,-3,-4,3,-40,-12],AM:[-5,-1,3,4,-38,-12],CM:[-8,-6,3,-1,-14,-4],DM:[-10,-18,-1,-8,3,2],CB:[-10,-30,-12,-18,3,3],LB:[0,-24,-8,-8,-3,-5],RB:[0,-24,-8,-8,-3,-5],GK:[0,0,0,0,0,0]};
+const LB=['PAC','SHO','PAS','DRI','DEF','PHY'],LG=['DIV','HAN','KIC','REF','SPD','POS'];
+const P=D.split('\n').map(l=>{let[n,c,p,o,e]=l.split('|');o=+o;return{n,c,p,o,e:e.replace('♀','').replace(/s$/,''),w:e.includes('♀'),base:price(o,n),st:OFF[p].map((d,i)=>Math.min(99,Math.max(30,o+d+H(n+i)%7-3)))}});
+const Q={GK:1,CB:2,LB:1,RB:1,DM:1,CM:1,AM:1,LW:1,RW:1,ST:1};
+const AIS=[['Madrid Titans','gal','Galáctico collector'],['Manchester Blues','agg','Aggressive bidder'],['Torino Steel','def','Defensive specialist'],['Rotterdam Academy','you','Youth developer'],['Lisbon Scouts','bar','Bargain hunter'],['Milano Tattica','tac','Tactical manager'],['Munich Balance','bal','Balanced manager']];
+const S={pool:150,ai:5,bud:1000,max:11,name:'Chennai Kings'};let G=null,iv=null,sp=1,ac=null;
+const inc=v=>v<20?1:v<50?2:v<100?5:v<200?10:20;
+const $=s=>document.querySelector(s),R=a=>a[Math.random()*a.length|0];
+const beep=(f,d=.12)=>{try{ac=ac||new AudioContext();const o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;g.gain.value=.05;o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+d)}catch(e){}};
+function setup(){clearInterval(iv);$('#app').innerHTML=`<div class="g" style="padding-top:20px"><h1>Football Legends<br>Auction</h1><p class="mu" style="max-width:520px">${P.length} greats from the 1950s to today, men’s and women’s. Outbid rival clubs, fill your squad and finish with the best XI.</p>
+<div class="pn" style="max-width:520px"><label for="nm">Your club</label><input id="nm" value="${S.name}" maxlength="22">
+<label for="ai">Number of players</label><select id="ai">${[2,3,4,5,6].map(n=>`<option ${n==S.ai?'selected':''}>${n}</option>`)}</select>
+<label for="bd">Budget (million FC)</label><select id="bd">${[500,800,1000,1500,2000].map(n=>`<option ${n==S.bud?'selected':''}>${n}</option>`)}</select>
+<label for="mx">Squad size</label><select id="mx"><option value="11">11 players</option><option value="15" ${S.max==15?'selected':''}>15 players</option></select>
+<label for="pp">Players in the auction</label><select id="pp">${[60,100,150,250,999].map(n=>`<option value="${n}" ${n==S.pool?'selected':''}>${n==999?'Everyone ('+P.length+')':'Top '+n+' rated'}</option>`).join('')}</select><p class="row"><button id="go">Play vs AI rivals</button><button class="s" id="mk">Create private room</button></p><label for="cd">Room code</label><div class="row"><input id="cd" maxlength="6" inputmode="numeric" placeholder="123456"><button class="s" id="jn" style="flex:none">Join room</button></div><p><button class="s" id="pl">Browse all ${P.length} players</button></p><p id="er" class="red"></p><p class="mu" style="font-size:14px">The player count above is for AI games only. In a private room, only the people who join play (up to 12), with no AI clubs. Everyone needs this page open with an internet connection and the room code.</p></div></div>`;
+const rd=()=>{S.name=cl($('#nm').value||'My Club');S.ai=+$('#ai').value;S.bud=+$('#bd').value;S.max=+$('#mx').value;S.pool=+$('#pp').value};
+$('#go').onclick=()=>{rd();start()};$('#pl').onclick=browse;$('#mk').onclick=()=>{rd();host()};$('#jn').onclick=()=>{rd();joinRoom(($('#cd').value||'').replace(/\D/g,''))}}
+function start(H){PZ=0;const T=[{n:S.name,me:1,b:S.bud,sq:[],peer:H?ME:null}];(H||[]).forEach(h=>T.push({n:h.n,b:S.bud,sq:[],peer:h.p,d:'Player'}));AIS.slice(0,H?0:Math.max(0,S.ai-T.length)).forEach(a=>T.push({n:a[0],k:a[1],d:a[2],b:S.bud,sq:[]}));
+const L=P.slice().sort((a,b)=>b.o-a.o).slice(0,S.pool).sort(()=>Math.random()-.5);G={T,L,i:0,r:1,un:[],log:[],cur:null,host:!!H,ann:'Welcome to the auction floor!'};sp=1;next();clearInterval(iv);iv=setInterval(tick,1000)}
+const full=t=>t.sq.length>=S.max,reserve=t=>Math.max(0,11-t.sq.length-1);
+function next(){if(G.T.every(full)){return endAuc()}if((G.bk|0)<2&&G.r==1&&G.i>=Math.floor(G.L.length*((G.bk|0)+1)/3)){G.bk=(G.bk|0)+1;return trade(G.bk==1?'First exchange window':'Second exchange window')}if(G.i>=G.L.length){if(G.r==1&&G.un.length){G.L=G.un;G.un=[];G.i=0;G.r=2;G.ann='Unsold players return for a second round'}else return endAuc()}
+G.cur={p:G.L[G.i++],bid:0,by:null,t:12,pass:0,done:0,wait:2,jit:G.T.map(()=>.85+Math.random()*.3)};render()}
+function nb(c){return c.by?c.bid+inc(c.bid):c.p.base}
+function ok(t,c){const n=nb(c);return !full(t)&&c.by!==t&&t.b-n>=reserve(t)}
+function cap(t,i,c){const p=c.p,k=t.k;let m=({agg:p.o>=90?1.7:1.2,gal:p.o>=92?1.9:.7,bar:1,def:'GK CB LB RB DM'.includes(p.p)?1.6:.8,you:/20[12]0/.test(p.e)?1.6:.8,bal:1.25,tac:1.2})[k];
+const have=t.sq.filter(x=>x.p==p.p).length;m*=have<Q[p.p]?1:.55;if(t.sq.length>=11)m*=.6;return p.base*m*c.jit[i]}
+function bid(t){const c=G.cur;c.bid=nb(c);c.by=t;if(c.t<5)c.t=5;G.log.unshift(`${t.n} bids ${c.bid} FC`);beep(t===my()?660:440,.08)}
+function tick(){if(PZ&&!RM)return;if(G.ph){if(--G.tt<=0)endTrade();else{if(G.tt%12==0)aiOffer();const e=$('#tm');if(e)e.textContent=G.tt;pub()}return}const c=G.cur;if(!c)return;if(c.done){if(--c.wait<=0)next();else render();return}
+G.T.map((t,i)=>[t,i]).filter(([t,i])=>!t.me&&!t.peer&&ok(t,c)&&nb(c)<=cap(t,i,c)&&(t.k!='bar'||c.t<=4)).sort(()=>Math.random()-.5).slice(0,2).forEach(([t,i])=>{if(Math.random()<.5&&ok(t,c)&&c.by!==t)bid(t)});
+if(--c.t<=0)resolve();render()}
+function resolve(){const c=G.cur,p=c.p;c.done=1;c.wait=2;if(c.by){c.by.b-=c.bid;c.by.sq.push(p);(c.by.pd=c.by.pd||{})[p.n]=c.bid;G.ann=p.o>=95?`LEGEND! ${p.n} goes to ${c.by.n} for ${c.bid} FC!`:`SOLD! ${p.n} to ${c.by.n} for ${c.bid} FC`;G.log.unshift(G.ann);beep(c.by===my()?880:330,.3)}else{G.un.push(p);G.ann=`UNSOLD: ${p.n}`;G.log.unshift(G.ann)}}
+function render(){if(G.ph)return rt();const c=G.cur,me=my(),p=c.p;if(PASS===p.n)c.pass=1;const n=nb(c),t3=p.o>=93?'t3':p.o>=88?'t2':'t1',lab=p.p=='GK'?LG:LB,ini=p.n.split(' ').map(x=>x[0]).slice(0,2).join('');
+const can=!PZ&&!c.done&&!c.pass&&ok(me,c)&&me.b-n>=0;
+$('#app').innerHTML=`<div class="row" style="align-items:center"><h2 style="flex:2">Round ${G.r} · Lot ${G.i}/${G.L.length}</h2>${RM?'':`<button class="s" id="pz" style="flex:none">${PZ?'Resume':'Pause'}</button>`}<button class="s" id="sp" style="flex:none">Speed ${sp}×</button><button class="s" id="qt" style="flex:none">Quit</button></div>
+<div class="ann" aria-live="polite">${PZ&&!RM?'Paused':G.ann}</div>
+<div class="g g2"><div class="g"><div class="pn"><div class="card"><div class="mono ${t3}">${ini}</div><div style="flex:1"><h2 style="font-size:34px">${p.n}</h2><div class="mu">${p.c} · ${p.p} · ${p.e}s${p.w?' · women’s football':''}</div></div><div class="ovr">${p.o}</div></div>
+<div class="st">${p.st.map((v,i)=>`<div><b>${v}</b><span>${lab[i]}</span></div>`).join('')}</div></div>
+<div class="pn"><div class="row" style="align-items:end"><div><span class="mu">${c.by?'Highest bid':'Base price'}</span><div class="big">${c.by?c.bid:p.base} FC</div><span class="${c.by&&c.by===me?'grn':'mu'}">${c.by?c.by.n:'No bids yet'}</span></div><div style="text-align:right"><span class="mu">Time</span><div class="big ${c.t<=3&&!c.done?'red':''}">${c.done?'—':c.t}</div></div></div>
+<div class="bar" style="margin:12px 0"><i style="width:${c.done?0:c.t/12*100}%"></i></div>
+<div class="row"><button id="bd" ${can?'':'disabled'}>Bid ${n} FC</button><button class="s" id="ps" ${c.done||c.pass?'disabled':''}>${c.pass?'Passed':'Pass'}</button></div>
+<p class="mu" style="margin:8px 0 0;font-size:14px">Your purse: ${me.b} FC · Squad ${me.sq.length}/${S.max}</p></div></div>
+<div class="g"><div class="pn"><table><tr><th>Club</th><th>Purse</th><th>Squad</th></tr>${G.T.map(t=>`<tr class="${t===me?'me':''}"><td>${t.n}<br><span class="mu" style="font-size:12px">${t===me?'You':t.d||'Player'}</span></td><td>${t.b}</td><td>${t.sq.length}/${S.max}</td></tr>`).join('')}</table></div>
+<div class="pn"><div class="mu">Auction log</div><div class="log">${G.log.slice(0,30).map(x=>`<div>${x}</div>`).join('')}</div></div>
+${sqp(me)}</div></div>`;
+$('#bd').onclick=()=>{if(!can)return;if(RM&&!G.host)RM.emit('act',{t:'bid',n});else{bid(me);render()}};$('#ps').onclick=()=>{c.pass=1;PASS=p.n;render()};
+$('#sp').onclick=()=>{if(RM&&!G.host)return;sp=sp==1?2:sp==2?4:1;clearInterval(iv);iv=setInterval(tick,1000/sp);render()};wv();if($('#pz'))$('#pz').onclick=()=>{PZ=!PZ;render()};$('#qt').onclick=quit;if(G.host)pub()}
+function rate(t){const o=t.sq.map(x=>x.o).sort((a,b)=>b-a).slice(0,11);const cov=Object.keys(Q).filter(k=>t.sq.some(x=>x.p==k)).length;return t.sq.length?+((o.reduce((a,b)=>a+b,0)/11)+cov*.3).toFixed(1):0}
+function fin(){clearInterval(iv);G.cur=null;if(G.host){G.end=1;pub();setTimeout(pub,1500)}const R2=G.T.map(t=>({t,r:rate(t)})).sort((a,b)=>b.r-a.r),w=R2[0].t,me=my();
+$('#app').innerHTML=`<div class="g" style="padding-top:20px"><h1>${w===me?'You won the auction':w.n+' win the auction'}</h1><div class="pn"><table><tr><th>#</th><th>Club</th><th>Rating</th><th>Spent</th></tr>${R2.map((x,i)=>`<tr class="${x.t.me?'me':''}"><td>${i+1}</td><td>${x.t.n}</td><td>${x.r}</td><td>${S.bud-x.t.b} FC</td></tr>`).join('')}</table></div>
+<div class="pn"><h3>Your squad (best first)</h3><p>${me.sq.sort((a,b)=>b.o-a.o).map(x=>`<span class="chip">${x.p} ${x.n} · ${x.o} · ${x.base} base</span>`).join('')||'No signings'}</p></div>
+${R2.filter(x=>x.t!==me).map(x=>`<div class="pn"><h3>${x.t.n}</h3><p>${x.t.sq.slice().sort((a,b)=>b.o-a.o).map(y=>`<span class="chip">${y.p} ${y.n} · ${y.o}${(x.t.pd||{})[y.n]?' · '+x.t.pd[y.n]+' FC':''}</span>`).join('')||'No signings'}</p></div>`).join('')}<p><button id="again">Play again</button></p><p class="mu" style="font-size:14px">Rating is the average of your best 11 plus a small bonus for covering every position.</p></div>`;$('#again').onclick=quit}
+let PZ=0,CT=0,VW=-1,LSG='',RM=null,ME=null,PASS=null,LOB=[],LOBV=null,CODE='',HO=0,lt=null;
+// Supabase project settings: fill these in after creating your free Supabase project.
+const SUPABASE_URL='https://gtrlfklimxfyfxdbmsrl.supabase.co';
+const SUPABASE_ANON_KEY='sb_publishable_xWLEBCiRUD-NhEeS5o3T2Q_rW6CmCXv';
+let SB=null,ROOM_ERR='';
+const cl=s=>String(s).replace(/[<>&"'`]/g,'');
+const my=()=>G.T.find(t=>ME&&t.peer===ME)||(RM&&!HO?{n:'Spectator',b:0,sq:[]}:G.T[0]);
+const err=m=>{const e=$('#er');if(e)e.textContent=m};
+async function conn(code,isHost=false){
+ try{
+  ROOM_ERR='';
+  if(SUPABASE_URL.startsWith('YOUR_')||SUPABASE_ANON_KEY.startsWith('YOUR_')){ROOM_ERR='Multiplayer is not connected yet. Add your Supabase Project URL and public anon/publishable key to index.html, then reload.';return null}
+  if(!window.supabase||!window.supabase.createClient){ROOM_ERR='Could not load the multiplayer service. Check your internet connection and reload.';return null}
+  SB=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+  ME=(crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random().toString(36).slice(2));
+  // Attach the game handlers before subscribing so no room messages are missed.
+  const handlers={act:onAct,st:onSt};
+  const channel=SB.channel('fla-'+code,{config:{broadcast:{self:false},presence:{key:ME}}});
+  let presenceDone;
+  const presenceSynced=new Promise(resolve=>{presenceDone=resolve});
+  let presenceResolved=false;
+  const finishPresence=()=>{if(!presenceResolved){presenceResolved=true;presenceDone()}};
+  channel.on('presence',{event:'sync'},finishPresence);
+  channel.on('broadcast',{event:'act'},({payload})=>handlers.act&&handlers.act({data:payload.data||{},peer:payload.peer,sameTab:false}));
+  channel.on('broadcast',{event:'st'},({payload})=>handlers.st&&handlers.st({data:payload.data||{},sameTab:false}));
+  RM={
+   on(event,fn){handlers[event]=fn;return this},
+   emit(event,data){channel.send({type:'broadcast',event,payload:{peer:ME,data}}).catch(()=>{ROOM_ERR='A multiplayer message could not be sent. Check your connection.'})},
+   async leave(){try{await channel.untrack()}catch(e){}try{await SB.removeChannel(channel)}catch(e){}}
+  };
+  const status=await new Promise(resolve=>{channel.subscribe(s=>{if(s==='SUBSCRIBED'||s==='CHANNEL_ERROR'||s==='TIMED_OUT')resolve(s)})});
+  if(status!=='SUBSCRIBED'){await RM.leave();RM=null;ROOM_ERR='Could not connect to the room. Check your Supabase Realtime settings.';return null}
+  if(isHost){const tracked=await channel.track({role:'host',name:S.name});if(tracked!=='ok'){await RM.leave();RM=null;ROOM_ERR='Connected, but could not register the room host. Try creating the room again.';return null}return RM}
+  await Promise.race([presenceSynced,new Promise(resolve=>setTimeout(resolve,2500))]);
+  const members=Object.values(channel.presenceState()).flat();
+  if(!members.some(x=>x.role==='host')){await RM.leave();RM=null;ROOM_ERR='No active room found with that code. Ask the host to create the room first.';return null}
+  return RM;
+ }catch(e){if(RM&&RM.leave)await RM.leave();RM=null;ROOM_ERR='Could not connect to Supabase. Check the project URL, public key and Realtime settings.';return null}
+}
+async function host(){const code=String(100000+Math.random()*900000|0);if(!await conn(code,true))return err(ROOM_ERR||'Could not create the room.');CODE=code;HO=1;LOB=[];lobby();lt=setInterval(lobPub,2000)}
+async function joinRoom(code){if(code.length!=6)return err('Enter the 6-digit room code.');if(!await conn(code,false))return err(ROOM_ERR||'Could not join that room.');CODE=code;HO=0;G=null;RM.emit('act',{t:'hi',n:S.name});lobby()}
+function lobby(){const pl=HO?[S.name,...LOB.map(h=>h.n)]:(LOBV?LOBV.pl:[]);$('#app').innerHTML=`<div class="g" style="padding-top:20px"><h1>Room ${CODE}</h1><div class="pn"><p class="mu">Share this code. Friends open this page and choose Join room. Only the people here will play; there are no AI clubs.</p><h3>Players (${pl.length})</h3><p>${pl.map(x=>`<span class="chip">${cl(x)}</span>`).join('')}</p>${HO?'<button id="st">Start auction</button>':'<p class="mu">Waiting for the host to start…</p>'} <button class="s" id="lv">Leave room</button></div></div>`;if(HO)$('#st').onclick=()=>{clearInterval(lt);start(LOB)};$('#lv').onclick=quit}
+function lobPub(){if(RM&&HO&&!G)RM.emit('st',{lob:1,pl:[S.name,...LOB.map(h=>h.n)]})}
+function onAct(m){const d=m.data||{};if(m.sameTab){ME=m.peer;return}if(!HO)return;
+if(d.t=='hi'&&!G){if(!LOB.some(h=>h.p==m.peer)&&LOB.length<11)LOB.push({p:m.peer,n:cl(d.n||'Guest').slice(0,22)});lobPub();lobby()}
+else if(d.t=='bid'&&G&&G.cur){const t=G.T.find(x=>x.peer==m.peer),c=G.cur;if(t&&!c.done&&ok(t,c)&&d.n===nb(c)){bid(t);render()}}
+else if(G&&G.ph){const t=G.T.find(x=>x.peer==m.peer);if(t){doAct(t,d);render()}}}
+function pub(){if(!RM||!G||!G.host)return;const c=G.cur;RM.emit('st',{r:G.r,i:G.i,n:G.L.length,lg:G.log.slice(0,6),an:G.ann,mx:S.max,bd:S.bud,end:G.end?1:0,T:G.T.map(t=>[t.n,t.b,t.peer||null,t.d||'',t.sq.map(x=>P.indexOf(x)),t.sq.map(x=>(t.pd||{})[x.n]||0),t.fm==null?-1:t.fm]),pi:c?P.indexOf(c.p):0,bid:c?c.bid:0,by:c&&c.by?G.T.indexOf(c.by):-1,t:c?c.t:0,dn:c&&c.done?1:0,ph:G.ph?1:0,tt:G.tt||0,of:(G.offers||[]).map(o=>[o.id,o.f,o.t,o.g,o.w,mm(o)]),mg:G.msg||''})}
+function onSt(m){if(HO||m.sameTab)return;const d=m.data;if(!d)return;if(d.lob){if(!G){LOBV={pl:(d.pl||[]).map(cl)};lobby()}return}
+S.max=d.mx;S.bud=d.bd;const sg=JSON.stringify([d.of,d.mg,d.T.map(x=>x[4]),d.ph]);if(d.ph&&G&&G.ph&&sg===LSG){G.tt=d.tt;const e=$('#tm');if(e)e.textContent=d.tt;return}LSG=sg;G={host:0,ph:d.ph,tt:d.tt,msg:cl(d.mg||''),offers:(d.of||[]).map(o=>({id:o[0],f:o[1],t:o[2],g:o[3],w:o[4],m:o[5]||0})),r:d.r,i:d.i,L:{length:d.n},log:d.lg.map(cl),ann:cl(d.an),T:d.T.map(x=>({n:cl(x[0]),b:x[1],peer:x[2],d:cl(x[3]),sq:x[4].map(i=>P[i]),pd:Object.fromEntries(x[4].map((i,k)=>[P[i].n,(x[5]||[])[k]||0])),fm:x[6]})),cur:null};
+if(d.end){fin();return}G.cur={p:P[d.pi],bid:d.bid,by:d.by<0?null:G.T[d.by],t:d.t,done:d.dn,pass:0};render()}
+function endAuc(){if(!G.fx){G.fx=1;return trade('Final exchange window')}fin()}
+function trade(m){G.ph=1;G.tt=60*sp;G.cur=null;G.offers=[];G.oid=G.oid||0;G.ann=m;G.msg='';render()}
+function endTrade(){if(!G.ph)return;G.ph=0;G.offers=[];G.msg='';if(G.fx)fin();else next()}
+const A=d=>{if(RM&&!G.host)RM.emit('act',d);else{doAct(my(),d);render()}};
+function swap(F,T2,a,b){const pa=F.pd=F.pd||{},pb=T2.pd=T2.pd||{},va=pa[a.n],vb=pb[b.n];delete pa[a.n];delete pb[b.n];if(vb!=null)pa[b.n]=vb;if(va!=null)pb[a.n]=va;F.sq=F.sq.filter(x=>x!==a).concat(b);T2.sq=T2.sq.filter(x=>x!==b).concat(a);const ia=P.indexOf(a),ib=P.indexOf(b);G.offers=G.offers.filter(o=>o.g!=ia&&o.w!=ia&&o.g!=ib&&o.w!=ib);G.msg=`Exchange agreed: ${F.n} get ${b.n}, ${T2.n} get ${a.n}`;beep(520,.25)}
+function aiOK(t,get,give){const s=t.sq;t.sq=s.filter(x=>x!==give);const a=cap(t,0,{p:get,jit:[1]}),b=cap(t,0,{p:give,jit:[1]});t.sq=s;return a>=b*1.1}
+function offer(f,t,g,w){const F=G.T[f],X=G.T[t],pg=P[g],pw=P[w];if(!F||!X||f==t||!pg||!pw||!F.sq.includes(pg)||!X.sq.includes(pw))return;if(G.offers.some(o=>o.f==f&&o.t==t&&o.g==g&&o.w==w))return;
+if(X.me||X.peer){G.offers.push({id:++G.oid,f,t,g,w});G.msg=`${F.n} offered ${pg.n} for ${pw.n} to ${X.n}`}
+else if(aiOK(X,pw,pg))swap(F,X,pg,pw);else G.msg=`${X.n} rejected the swap of ${pg.n} for ${pw.n}`}
+function doAct(t,d){if(!G.ph||!d)return;const i=G.T.indexOf(t);if(d.t=='off')return offer(i,+d.to,+d.g,+d.w);
+const o=G.offers.find(x=>x.id==d.id);if(!o||o.t!=i)return;G.offers=G.offers.filter(x=>x!==o);
+if(d.t=='acc'){const F=G.T[o.f],X=G.T[o.t];if(F.sq.includes(P[o.g])&&X.sq.includes(P[o.w]))swap(F,X,P[o.g],P[o.w]);else G.msg='That offer is no longer valid'}else if(d.t=='dec')G.msg=`${t.n} declined the offer`}
+function aiOffer(){const hs=G.T.filter(t=>(t.me||t.peer)&&t.sq.length),as=G.T.filter(t=>t.k&&t.sq.length);if(!hs.length||!as.length)return;const a=R(as),h=R(hs),v=(t,x)=>cap(t,0,{p:x,jit:[1]});
+const w=h.sq.slice().sort((x,y)=>v(a,y)-v(a,x))[0],g=a.sq.slice().sort((x,y)=>v(a,x)-v(a,y))[0];if(!w||!g||g===w||!aiOK(a,w,g))return;
+const f=G.T.indexOf(a),t=G.T.indexOf(h),gi=P.indexOf(g),wi=P.indexOf(w);if(G.offers.some(o=>o.f==f&&o.t==t))return;G.offers.push({id:++G.oid,f,t,g:gi,w:wi});G.msg=`${a.n} sent you an offer`;render()}
+function rt(){const me=my(),mi=G.T.indexOf(me),T=G.T,of=G.offers||[],opt=x=>`<option value='${P.indexOf(x)}'>${x.p} ${x.n} ${x.o}</option>`;
+const inc=of.filter(o=>o.t==mi),out=of.filter(o=>o.f==mi);
+$('#app').innerHTML=`<div class='row' style='align-items:center'><h2 style='flex:2'>${G.ann} · <span id='tm'>${G.tt}</span>s</h2>${G.host||!RM?`<button id='ct' style='flex:none'>${G.fx?'Finish auction':'Resume auction'}</button>`:''}</div><div class='ann' aria-live='polite'>${G.msg||'Swap players with another club. Both clubs must agree.'}</div><div class='g g2'><div class='pn'><h3>Propose a swap</h3><label for='xg'>You give</label><select id='xg'>${me.sq.map(x=>opt(x)).join('')}</select><label for='xt'>Club</label><select id='xt'>${T.map((t,i)=>i!=mi&&t.sq.length?`<option value='${i}'>${t.n}</option>`:'').join('')}</select><label for='xw'>You get</label><select id='xw'></select><p><button id='xo'>Offer swap</button></p></div><div class='pn'><h3>Offers to you</h3>${inc.map(o=>`<p>${T[o.f].n} give ${P[o.g].n} (${P[o.g].o}) for your ${P[o.w].n} (${P[o.w].o})<br><button data-a='acc' data-i='${o.id}'>Accept</button> <button class='s' data-a='dec' data-i='${o.id}'>Decline</button></p>`).join('')||`<p class='mu'>None right now</p>`}<h3>Your pending offers</h3>${out.map(o=>`<p class='mu'>${P[o.g].n} for ${P[o.w].n} with ${T[o.t].n}</p>`).join('')||`<p class='mu'>None</p>`}</div></div>${sqp(me)}`;
+const fill=()=>{const v=$('#xt').value,t=v===''?null:T[+v];$('#xw').innerHTML=t?t.sq.map(x=>opt(x)).join(''):''};$('#xt').onchange=fill;fill();
+$('#xo').onclick=()=>{if($('#xg').value===''||$('#xw').value===''||$('#xt').value==='')return;A({t:'off',to:+$('#xt').value,g:+$('#xg').value,w:+$('#xw').value})};
+document.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>A({t:b.dataset.a,id:+b.dataset.i}));
+wv();if($('#ct'))$('#ct').onclick=endTrade;if(G.host)pub()}
+const mm=o=>+o.m||0,nmP=i=>i>=0&&P[i]?P[i].n+' ('+P[i].o+')':'no player';
+const ot=o=>{const m=mm(o);return `${G.T[o.f].n} gives ${nmP(o.g)}${m>0?' + '+m+' FC':''} and asks for ${nmP(o.w)}${m<0?' + '+(-m)+' FC':''}`};
+function ok2(F,X,pg,pw,m){return !!((pg||pw)&&(!pg||F.sq.includes(pg))&&(!pw||X.sq.includes(pw))&&(m>0?F.b>=m:X.b>=-m)&&F.sq.length-(pg?1:0)+(pw?1:0)<=S.max&&X.sq.length-(pw?1:0)+(pg?1:0)<=S.max)}
+function swap(F,X,pg,pw,m){m=m||0;const pa=F.pd=F.pd||{},pb=X.pd=X.pd||{},va=pg&&pa[pg.n],vb=pw&&pb[pw.n];
+if(pg){F.sq=F.sq.filter(x=>x!==pg);X.sq=X.sq.concat(pg);delete pa[pg.n];if(va!=null)pb[pg.n]=va}
+if(pw){X.sq=X.sq.filter(x=>x!==pw);F.sq=F.sq.concat(pw);delete pb[pw.n];if(vb!=null)pa[pw.n]=vb}
+F.b-=m;X.b+=m;const ids=[pg,pw].filter(Boolean).map(x=>P.indexOf(x));G.offers=G.offers.filter(o=>!ids.includes(o.g)&&!ids.includes(o.w));
+G.msg=`Deal agreed: ${F.n} get ${pw?pw.n:'no player'}${m<0?' + '+(-m)+' FC':''}, ${X.n} get ${pg?pg.n:'no player'}${m>0?' + '+m+' FC':''}`;beep(520,.25)}
+function aiOK(t,get,give,cash){cash=cash||0;const s=t.sq;t.sq=s.filter(x=>x!==give);const a=(get?cap(t,0,{p:get,jit:[1]}):0)+cash,b=give?cap(t,0,{p:give,jit:[1]})*1.1:0;t.sq=s;return a>=b}
+function offer(f,t,g,w,m){m=Math.round(+m||0);const F=G.T[f],X=G.T[t],pg=g>=0?P[g]:null,pw=w>=0?P[w]:null;if(!F||!X||f==t||Math.abs(m)>5000||!ok2(F,X,pg,pw,m)){G.msg='That offer is not possible: check the players, cash and squad sizes';return}
+if(G.offers.some(o=>o.f==f&&o.t==t&&o.g==g&&o.w==w&&mm(o)==m))return;
+if(X.me||X.peer){G.offers.push({id:++G.oid,f,t,g,w,m});G.msg=`${F.n} sent ${X.n} an offer`;return}
+if(aiOK(X,pg,pw,m))return swap(F,X,pg,pw,m);
+const s=X.sq;X.sq=s.filter(x=>x!==pw);const a=(pg?cap(X,0,{p:pg,jit:[1]}):0)+m,b=pw?cap(X,0,{p:pw,jit:[1]})*1.1:0;X.sq=s;const ask=Math.ceil(b-a);
+if(ask>0&&ask<=300&&ok2(F,X,pg,pw,m+ask)&&Math.random()<.8){G.offers.push({id:++G.oid,f:t,t:f,g:w,w:g,m:-(m+ask)});G.msg=`${X.n} countered: they want ${m+ask} FC in total`}
+else G.msg=`${X.n} rejected the offer`}
+function doAct(t,d){if(!G.ph||!d)return;const i=G.T.indexOf(t);if(d.t=='fm'){const v=+d.i;t.fm=v>=-1&&v<FM.length?v:-1;return}if(d.t=='off')return offer(i,+d.to,+d.g,+d.w,d.m);
+const o=G.offers.find(x=>x.id==d.id);if(!o||o.t!=i)return;G.offers=G.offers.filter(x=>x!==o);
+const F=G.T[o.f],X=G.T[o.t],pg=o.g>=0?P[o.g]:null,pw=o.w>=0?P[o.w]:null;
+if(d.t=='acc'){if(ok2(F,X,pg,pw,mm(o)))swap(F,X,pg,pw,mm(o));else G.msg='That offer is no longer valid'}
+else if(d.t=='ctr')offer(i,o.f,o.w,+d.w,d.m);
+else if(d.t=='dec')G.msg=`${t.n} declined the offer`}
+function rt(){const me=my(),mi=G.T.indexOf(me),T=G.T,of=G.offers||[],opt=x=>`<option value='${P.indexOf(x)}'>${x.p} ${x.n} ${x.o}</option>`,np=`<option value='-1'>No player</option>`;
+const inc=of.filter(o=>o.t==mi),out=of.filter(o=>o.f==mi);
+$('#app').innerHTML=`<div class='row' style='align-items:center'><h2 style='flex:2'>${G.ann} · <span id='tm'>${G.tt}</span>s</h2>${G.host||!RM?`<button id='ct' style='flex:none'>${G.fx?'Finish auction':'Resume auction'}</button>`:''}</div><div class='ann' aria-live='polite'>${G.msg||'Ask for a player and offer players and cash. Both clubs must agree.'}</div><div class='g g2'><div class='pn'><h3>Propose a trade</h3><p class='mu'>Your purse: ${me.b} FC</p><label for='xt'>Club</label><select id='xt'>${T.map((t,i)=>i!=mi&&t.sq.length?`<option value='${i}'>${t.n}</option>`:'').join('')}</select><label for='xw'>You want</label><select id='xw'></select><label for='xg'>You give</label><select id='xg'>${np}${me.sq.map(opt).join('')}</select><label for='xm'>Cash</label><div class='row'><select id='xd'><option value='1'>I add cash</option><option value='-1'>I ask for cash</option></select><input id='xm' type='number' min='0' max='5000' value='0'></div><p><button id='xo'>Send offer</button></p></div><div class='pn'><h3>Offers to you</h3>${inc.map(o=>`<p>${ot(o)}<br><button data-a='acc' data-i='${o.id}'>Accept</button> <button class='s' data-a='dec' data-i='${o.id}'>Decline</button> <button class='s' data-a='cto' data-i='${o.id}'>Counter</button></p>${CT===o.id?`<div class='row'><select id='cw'>${T[o.f].sq.map(opt).join('')}${np}</select><select id='cd'><option value='-1'>I ask for cash</option><option value='1'>I add cash</option></select><input id='cm' type='number' min='0' max='5000' value='0'></div><p><button data-a='ctr' data-i='${o.id}'>Send counter</button></p>`:''}`).join('')||`<p class='mu'>None right now</p>`}<h3>Your pending offers</h3>${out.map(o=>`<p class='mu'>${ot(o)}</p>`).join('')||`<p class='mu'>None</p>`}</div></div>${sqp(me)}`;
+const fill=()=>{const v=$('#xt').value,t=v===''?null:T[+v];$('#xw').innerHTML=t?t.sq.map(opt).join('')+np:''};$('#xt').onchange=fill;fill();
+$('#xo').onclick=()=>{const w=$('#xw').value,g=$('#xg').value,to=$('#xt').value;if(to===''||w===''||(w==='-1'&&g==='-1'))return;A({t:'off',to:+to,g:+g,w:+w,m:+$('#xd').value*(+$('#xm').value||0)})};
+fmPanel(me,mi);document.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{const a=b.dataset.a,id=+b.dataset.i;if(a=='cto'){CT=id;render()}else if(a=='ctr'){CT=0;A({t:'ctr',id,w:+$('#cw').value,m:+$('#cd').value*(+$('#cm').value||0)})}else A({t:a,id})});
+wv();if($('#ct'))$('#ct').onclick=endTrade;if(G.host)pub()}
+const SL=['GK','LB','CB','CB','RB','DM','CM','AM','LW','ST','RW'],REL={GK:[],LB:['RB','CB'],RB:['LB','CB'],CB:['DM','LB','RB'],DM:['CM','CB'],CM:['DM','AM'],AM:['CM','LW','RW','ST'],LW:['RW','AM','ST'],RW:['LW','AM','ST'],ST:['AM','LW','RW']},LK=[[0,2],[0,3],[2,3],[2,1],[3,4],[2,5],[3,5],[1,6],[4,6],[5,6],[5,7],[6,7],[7,8],[7,9],[7,10],[8,9],[10,9]];
+function rev(t){const pool=t.sq.slice().sort((a,b)=>b.o-a.o),xi=[],used=new Set();
+[0,9,8,10,7,6,5,2,3,1,4].forEach(s=>{const pos=SL[s];let p=pool.find(x=>!used.has(x)&&x.p==pos),pen=0;if(!p){p=pool.find(x=>!used.has(x)&&REL[pos].includes(x.p));pen=6}if(!p){p=pool.find(x=>!used.has(x));pen=pos=='GK'?25:12}if(p){used.add(p);xi[s]={p,pen,r:p.o-pen}}});
+const rs=SL.map((_,s)=>xi[s]?xi[s].r:40),av=a=>Math.round(a.reduce((x,y)=>x+y,0)/a.length*10)/10,avg=av(rs);
+let cs=0;const ls=[];LK.forEach(([a,b])=>{const A=xi[a],B=xi[b];if(!A||!B)return;let s=0;const why=[];if(A.p.c==B.p.c){s+=2;why.push(A.p.c)}if(A.p.e==B.p.e){s++;why.push(A.p.e+'s')}if(!A.pen&&!B.pen){s++;why.push('natural roles')}cs+=s;if(s)ls.push({a:A.p.n,b:B.p.n,s,why:why.join(', ')})});
+ls.sort((a,b)=>b.s-a.s);const chem=Math.round(cs/(LK.length*4)*100),f=Math.round((avg+chem*.06)*10)/10;
+const ln={gk:rs[0],df:av([rs[1],rs[2],rs[3],rs[4]]),md:av([rs[5],rs[6],rs[7]]),at:av([rs[8],rs[9],rs[10]])},un=[['defence',ln.df],['midfield',ln.md],['attack',ln.at],['goalkeeper',ln.gk]].sort((a,b)=>b[1]-a[1]);
+const oop=xi.filter(s=>s&&s.pen).length,pd=t.pd||{},bought=t.sq.filter(x=>pd[x.n]).sort((a,b)=>pd[b.n]-pd[a.n]),steal=t.sq.filter(x=>pd[x.n]).sort((a,b)=>pd[a.n]/a.base-pd[b.n]/b.base)[0];
+const text=`Strongest unit: ${un[0][0]} (${un[0][1]}). Weakest: ${un[3][0]} (${un[3][1]}). `+(oop?`${oop} starter${oop>1?'s are':' is'} out of position. `:'Every starter is in a natural position. ')+(ls[0]?`Best link: ${ls[0].a} and ${ls[0].b}. `:'')+(bought[0]?`Biggest signing: ${bought[0].n} for ${pd[bought[0].n]} FC. `:'')+(steal?`Best value: ${steal.n} for ${pd[steal.n]} FC. `:'')+(chem>=60?'The side looks well drilled.':chem>=35?'A decent blend of stars.':'More a collection of stars than a team.');
+return{t,xi,avg,chem,f,ls,ln,text,bench:pool.filter(x=>!used.has(x))}}
+function fin(){clearInterval(iv);G.cur=null;G.ph=0;if(G.host){G.end=1;pub();setTimeout(pub,1500)}
+const me=my(),RV=G.T.map(rev).sort((a,b)=>b.f-a.f||b.chem-a.chem),w=RV[0];
+$('#app').innerHTML=`<div class='g' style='padding-top:20px'><h1>${w.t===me?'You win the auction':w.t.n+' win the auction'}</h1><div class='pn'><h3>Final rankings</h3><table><tr><th>#</th><th>Club</th><th>Final</th><th>XI</th><th>Chem</th><th>Net spend</th></tr>${RV.map((x,i)=>`<tr class='${x.t===me?'me':''}'><td>${i+1}</td><td>${x.t.n}${x.t===me?' (you)':''}</td><td><b>${x.f}</b></td><td>${x.avg}</td><td>${x.chem}%</td><td>${S.bud-x.t.b} FC</td></tr>`).join('')}</table><p class='mu' style='font-size:14px'>Final rating = average of the best XI in a 4-3-3 (players out of position lose points) plus up to 6 points for team chemistry. Chemistry counts links between neighbouring starters: shared nationality, shared decade and natural roles.</p></div>${RV.map((x,i)=>`<div class='pn'><h3>${i+1}. ${x.t.n}${x.t===me?' (you)':''} · ${x.f}</h3><p class='mu'>Formation ${x.fn} · Goalkeeper ${x.ln.gk} · Defence ${x.ln.df} · Midfield ${x.ln.md} · Attack ${x.ln.at} · Chemistry ${x.chem}%</p><p>${x.text}</p><table>${x.sl.map((pos,k)=>{const s=x.xi[k];return s?`<tr><td>${pos}</td><td>${s.p.n}${s.pen?' *':''}</td><td>${s.r}</td><td class='mu'>${s.p.c} · ${s.p.e}s</td></tr>`:`<tr><td>${pos}</td><td class='mu' colspan='3'>Empty slot</td></tr>`}).join('')}</table><p class='mu' style='font-size:13px'>* out of position</p><div class='mu'>Player-to-player links</div>${x.ls.slice(0,8).map(l=>`<span class='chip'>${l.a} ↔ ${l.b} +${l.s} (${l.why})</span>`).join('')||`<span class='mu'>No links</span>`}${x.bench.length?`<div class='mu' style='margin-top:8px'>Bench</div>${x.bench.map(y=>`<span class='chip'>${y.p} ${y.n} ${y.o}</span>`).join('')}`:''}</div>`).join('')}<p>${RM?'':`<label for='ff' class='mu'>Change your formation: </label><select id='ff' style='width:auto'><option value='-1'>Auto (best fit)</option>${FM.map((f,i)=>`<option value='${i}' ${me.fm===i?'selected':''}>${f.n}</option>`).join('')}</select>`}</p><p><button id='again'>Play again</button></p></div>`;$('#again').onclick=quit;if($('#ff'))$('#ff').onchange=e=>{me.fm=+e.target.value;fin()}}
+const FD=`4-4-2|LB CB CB RB/LW CM CM RW/ST ST
+4-3-3 Holding|LB CB CB RB/CM DM CM/LW ST RW
+4-3-3 Attack|LB CB CB RB/CM AM CM/LW ST RW
+4-3-3 Defend|LB CB CB RB/DM DM CM/LW ST RW
+4-3-3 False 9|LB CB CB RB/CM DM CM/LW AM RW
+4-2-3-1|LB CB CB RB/DM DM/LW AM RW/ST
+4-3-2-1|LB CB CB RB/CM DM CM/AM AM/ST
+4-1-4-1|LB CB CB RB/DM/LW CM CM RW/ST
+4-5-1|LB CB CB RB/LW CM DM CM RW/ST
+4-4-2 Diamond|LB CB CB RB/DM/CM CM/AM/ST ST
+4-4-1-1|LB CB CB RB/LW CM CM RW/AM/ST
+4-2-2-2|LB CB CB RB/DM DM/AM AM/ST ST
+4-3-1-2|LB CB CB RB/CM DM CM/AM/ST ST
+4-2-4|LB CB CB RB/DM CM/LW ST ST RW
+4-1-3-2|LB CB CB RB/DM/LW AM RW/ST ST
+3-5-2|CB CB CB/LB DM CM AM RB/ST ST
+3-4-3|CB CB CB/LB CM CM RB/LW ST RW
+3-4-1-2|CB CB CB/LB CM CM RB/AM/ST ST
+3-4-2-1|CB CB CB/LB CM CM RB/AM AM/ST
+3-5-1-1|CB CB CB/LB DM CM CM RB/AM/ST
+3-1-4-2|CB CB CB/DM/LB CM CM RB/ST ST
+3-3-4|CB CB CB/CM DM CM/LW ST ST RW
+3-2-4-1|CB CB CB/DM DM/LW AM AM RW/ST
+3-6-1|CB CB CB/LB DM CM CM AM RB/ST
+5-3-2|LB CB CB CB RB/CM DM CM/ST ST
+5-4-1|LB CB CB CB RB/LW CM CM RW/ST
+5-2-3|LB CB CB CB RB/DM CM/LW ST RW
+5-2-1-2|LB CB CB CB RB/CM CM/AM/ST ST
+5-1-2-2|LB CB CB CB RB/DM/CM CM/ST ST
+2-3-5|CB CB/DM CM CM/LW AM ST AM RW`;
+const FM=FD.split('\n').map(l=>{const[n,r]=l.split('|');return{n,L:r.split('/').map(x=>x.split(' '))}}),PR={GK:0,ST:1,LW:2,RW:2,AM:3,CM:4,DM:5,CB:6,LB:7,RB:7};
+function revF(t,fi){const F=FM[fi],lines=[['GK'],...F.L],sl=[],idx=[];lines.forEach((l,a)=>{idx[a]=l.map(p=>{sl.push(p);return sl.length-1})});
+const pool=t.sq.slice().sort((a,b)=>b.o-a.o),xi=[],used=new Set();
+sl.map((_,i)=>i).sort((a,b)=>PR[sl[a]]-PR[sl[b]]).forEach(s=>{const pos=sl[s];let p=pool.find(x=>!used.has(x)&&x.p==pos),pen=0;if(!p){p=pool.find(x=>!used.has(x)&&REL[pos].includes(x.p));pen=6}if(!p){p=pool.find(x=>!used.has(x));pen=pos=='GK'?25:12}if(p){used.add(p);xi[s]={p,pen,r:p.o-pen}}});
+const rs=sl.map((_,s)=>xi[s]?xi[s].r:40),av=a=>a.length?Math.round(a.reduce((x,y)=>x+y,0)/a.length*10)/10:0,avg=av(rs);
+const set=new Set(),LKs=[],add=(a,b)=>{const k=a<b?a+'-'+b:b+'-'+a;if(a!=b&&!set.has(k)){set.add(k);LKs.push([a,b])}};
+lines.forEach((l,a)=>{for(let i=0;i<l.length-1;i++)add(idx[a][i],idx[a][i+1]);if(a<lines.length-1){const n=lines[a+1];l.forEach((_,i)=>add(idx[a][i],idx[a+1][Math.min(n.length-1,Math.floor((i+.5)*n.length/l.length))]));n.forEach((_,j)=>add(idx[a+1][j],idx[a][Math.min(l.length-1,Math.floor((j+.5)*l.length/n.length))]))}});
+let cs=0;const ls=[];LKs.forEach(([a,b])=>{const A=xi[a],B=xi[b];if(!A||!B)return;let s=0;const why=[];if(A.p.c==B.p.c){s+=2;why.push(A.p.c)}if(A.p.e==B.p.e){s++;why.push(A.p.e+'s')}if(!A.pen&&!B.pen){s++;why.push('natural roles')}cs+=s;if(s)ls.push({a:A.p.n,b:B.p.n,s,why:why.join(', ')})});
+ls.sort((a,b)=>b.s-a.s);const chem=Math.round(cs/(LKs.length*4)*100),f=Math.round((avg+chem*.06)*10)/10;
+const gp=g=>av(rs.filter((_,i)=>g.includes(sl[i]))),ln={gk:rs[0],df:gp(['CB','LB','RB']),md:gp(['DM','CM','AM']),at:gp(['LW','RW','ST'])},un=[['defence',ln.df],['midfield',ln.md],['attack',ln.at],['goalkeeper',ln.gk]].sort((a,b)=>b[1]-a[1]);
+const oop=xi.filter(s=>s&&s.pen).length,pd=t.pd||{},bought=t.sq.filter(x=>pd[x.n]).sort((a,b)=>pd[b.n]-pd[a.n]),steal=t.sq.filter(x=>pd[x.n]).sort((a,b)=>pd[a.n]/a.base-pd[b.n]/b.base)[0];
+const text=`Strongest unit: ${un[0][0]} (${un[0][1]}). Weakest: ${un[3][0]} (${un[3][1]}). `+(oop?`${oop} starter${oop>1?'s are':' is'} out of position. `:'Every starter is in a natural position. ')+(ls[0]?`Best link: ${ls[0].a} and ${ls[0].b}. `:'')+(bought[0]?`Biggest signing: ${bought[0].n} for ${pd[bought[0].n]} FC. `:'')+(steal?`Best value: ${steal.n} for ${pd[steal.n]} FC. `:'')+(chem>=60?'The side looks well drilled.':chem>=35?'A decent blend of stars.':'More a collection of stars than a team.');
+return{t,xi,sl,fn:F.n,avg,chem,f,ls,ln,text,bench:pool.filter(x=>!used.has(x))}}
+function rev(t){let b;(t.fm>=0?[t.fm]:FM.map((_,i)=>i)).forEach(i=>{const r=revF(t,i);if(!b||r.f>b.f)b=r});return b}
+function fmPanel(me,mi){if(mi<0)return;$('#app').insertAdjacentHTML('beforeend',`<div class='pn'><h3>Your formation</h3><p class='mu'>Used in the final review. Auto picks the best fit for your squad.</p><select id='fs'><option value='-1'>Auto (best fit)</option>${FM.map((f,i)=>`<option value='${i}' ${me.fm===i?'selected':''}>${f.n}</option>`).join('')}</select></div>`);$('#fs').onchange=e=>A({t:'fm',i:+e.target.value})}
+function browse(){const rows=q=>P.slice().sort((a,b)=>b.o-a.o).filter(p=>(p.n+' '+p.p+' '+p.c+' '+p.e).toLowerCase().includes(q)).map(p=>`<tr><td>${p.n}${p.w?' ♀':''}</td><td>${p.p}</td><td>${p.o}</td><td>${p.c}</td><td>${p.e}s</td><td>${p.base} FC</td></tr>`).join('');
+$('#app').innerHTML=`<div class='g' style='padding-top:20px'><h2>Player pool (${P.length})</h2><input id='q' placeholder='Search name, position, country or decade' aria-label='Search players'><div class='pn' style='overflow-x:auto'><table><tr><th>Player</th><th>Pos</th><th>OVR</th><th>Nat</th><th>Era</th><th>Base</th></tr><tbody id='tb'>${rows('')}</tbody></table></div><p><button id='bk'>Back</button></p></div>`;$('#q').oninput=e=>{$('#tb').innerHTML=rows(e.target.value.toLowerCase())};$('#bk').onclick=setup}
+function sqp(me){const v=G.T[VW]||me;return `<div class='pn'><div class='mu'>Squads · tap a club to see who it signed</div><div>${G.T.map((t,i)=>`<button class='s' style='padding:4px 10px;margin:2px;${t===v?'border-color:var(--gd);color:var(--gd)':''}' data-v='${i}'>${t.n}${t===me?' (you)':''}</button>`).join('')}</div><p><b>${v.n}</b> · ${v.sq.length} players · purse ${v.b} FC</p>${v.sq.map(x=>`<span class='chip'>${x.p} ${x.n} ${x.o}${(v.pd||{})[x.n]?' · '+v.pd[x.n]+' FC':''}</span>`).join('')||`<span class='mu'>Nobody signed yet</span>`}</div>`}
+function wv(){document.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{VW=+b.dataset.v;render()})}
+function quit(){PZ=0;VW=-1;clearInterval(iv);clearInterval(lt);if(RM)RM.leave();RM=null;HO=0;G=null;LOBV=null;ME=null;setup()}
+setup();
+</script></body></html>
