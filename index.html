@@ -388,7 +388,7 @@ const S={pool:150,ai:5,bud:1000,max:11,name:'Chennai Kings'};let G=null,iv=null,
 const inc=v=>v<20?1:v<50?2:v<100?5:v<200?10:20;
 const $=s=>document.querySelector(s),R=a=>a[Math.random()*a.length|0];
 const beep=(f,d=.12)=>{try{ac=ac||new AudioContext();const o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;g.gain.value=.05;o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+d)}catch(e){}};
-function setup(){clearInterval(iv);$('#app').innerHTML=`<div class="g" style="padding-top:20px"><h1>Football Legends<br>Auction</h1><p class="mu" style="max-width:520px">${P.length} greats from the 1950s to today, men’s and women’s. Outbid rival clubs, fill your squad and finish with the best XI.</p>
+function setup(){clearInterval(iv);$('#app').innerHTML=`<div class="g" style="padding-top:20px"><img src="logo.png" alt="Football Legends Auction" style="width:100%;max-width:520px;height:auto;display:block;margin:0 auto;"><p class="mu" style="max-width:520px">${P.length} greats from the 1950s to today, men’s and women’s. Outbid rival clubs, fill your squad and finish with the best XI.</p>
 <div class="pn" style="max-width:520px"><label for="nm">Your club</label><input id="nm" value="${S.name}" maxlength="22">
 <label for="ai">Number of players</label><select id="ai">${[2,3,4,5,6].map(n=>`<option ${n==S.ai?'selected':''}>${n}</option>`)}</select>
 <label for="bd">Budget (million FC)</label><select id="bd">${[500,800,1000,1500,2000].map(n=>`<option ${n==S.bud?'selected':''}>${n}</option>`)}</select>
